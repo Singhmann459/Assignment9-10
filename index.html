@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Drawing Page</title>
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+    }
+    #canvas-container {
+      margin-bottom: 20px;
+    }
+    #canvas {
+      border: 1px solid #000;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+    }
+    .btn {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="canvas-container">
+      <canvas id="canvas" width="800" height="400"></canvas>
+    </div>
+    <div class="btn-container">
+      <button id="blue" class="btn btn-primary"><i class="fas fa-paint-brush"></i> Blue</button>
+      <button id="black" class="btn btn-primary"><i class="fas fa-paint-brush"></i> Black</button>
+      <button id="red" class="btn btn-primary"><i class="fas fa-paint-brush"></i> Red</button>
+      <button id="yellow" class="btn btn-primary"><i class="fas fa-paint-brush"></i> Yellow</button>
+      <button id="eraser" class="btn btn-primary"><i class="fas fa-eraser"></i> Eraser</button>
+      <input type="range" id="slider" min="2" max="15" value="2" class="slider">
+      <button id="clean" class="btn btn-primary"><i class="far fa-file"></i> Clean</button>
+    </div>
+  </div>
+
+  <script >
+    const context = canvas.getContext('2d');
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    let currentColor = 'black';
+    let brushSize = 2;
+
+    function draw(e) {
+      if (!isDrawing) return;
+      context.strokeStyle = currentColor;
+      context.lineWidth = brushSize;
+      context.lineCap = 'round';
+
+      context.beginPath();
+      context.moveTo(lastX, lastY);
+      context.lineTo(e.offsetX, e.offsetY);
+      context.stroke();
+
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    document.getElementById('blue').addEventListener('click', () => currentColor = 'blue');
+    document.getElementById('black').addEventListener('click', () => currentColor = 'black');
+    document.getElementById('red').addEventListener('click', () => currentColor = 'red');
+    document.getElementById('yellow').addEventListener('click', () => currentColor = 'yellow');
+
+    document.getElementById('eraser').addEventListener('click', () => currentColor = 'white');
+
+    document.getElementById('slider').addEventListener('input', (e) => brushSize = e.target.value);
+
+    document.getElementById('clean').addEventListener('click', () => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    });
+    
+  </script>
+</body>
+</html>
